@@ -1,0 +1,21 @@
+#!/bin/env zsh
+
+BATTERY_STATE="$1"
+BATTERY_LEVEL=$(upower -i $(upower -e | grep battery) | awk '/percentage/ {print $2}' | sed 's/%//')
+
+case "$BATTERY_STATE" in
+"charging")
+  STATUS="Charging"
+  ICON="battery-charging"
+  ;;
+"discharging")
+  STATUS="Discharging"
+  ICON="battery-medium"
+  ;;
+*)
+  STATUS="Unknown"
+  ICON="battery-high"
+  ;;
+esac
+
+notify-send -u normal -i "$ICON" "$STATUS" "$BATTERY_LEVEL% battery" -t 1000 -r 9991

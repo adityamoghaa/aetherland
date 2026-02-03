@@ -1,0 +1,44 @@
+#!/bin/bash
+SCREENSHOT_DIR="${HOME}/Pictures/Screenshot"
+TIMESTAMP="$(date +%F_%H-%M-%S)"
+FILE="${SCREENSHOT_DIR}/Screenshot-${TIMESTAMP}.png"
+
+notify() {
+  local message="$1"
+  local icon="$2"
+  dunstify -i "$icon" "$message" -t 1000
+}
+
+region_screenshot() {
+  grim -g "$(slurp)" - | tee >(wl-copy) | {
+    cat >"$FILE"
+    if [ -s "$FILE" ]; then
+      notify "Screenshot of the region taken" "$FILE"
+    else
+      rm -f "$FILE"
+    fi
+  }
+}
+
+full_screenshot() {
+  grim - | wl-copy && wl-paste >"$FILE"
+  if [ -s "$FILE" ]; then
+    notify "Screenshot of whole screen taken" "$FILE"
+  else
+    rm -f "$FILE"
+  fi
+}
+
+case "$1" in
+region)
+  region_screenshot
+  ;;
+full)
+  full_screenshot
+  ;;
+*)
+  echo "Usage: $0 {region|full}"
+  exit 1
+  ;;
+esac
+

@@ -1,0 +1,58 @@
+#!/bin/env zsh
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+  export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+fi
+if [ -z "$WAYLAND_DISPLAY" ]; then
+  export WAYLAND_DISPLAY="wayland-1"
+fi
+
+WARNING_LEVEL=20
+CRITICAL_LEVEL=5
+FULL_LEVEL=100
+
+# Set notification icons (use icon names from your icon theme or absolute paths)
+ICON_FULL="battery-high"
+ICON_LOW="battery-low"
+ICON_CRIT="battery-warning"
+
+# Get battery device (first found)
+BAT=$(upower -e | grep -i battery | head -n1)
+[ -z "$BAT" ] && exit 0
+
+# Get battery details
+INFO=$(upower -i "$BAT")
+PERCENT=$(echo "$INFO" | awk '/percentage:/ {gsub("%",""); print $2}')
+STATE=$(echo "$INFO" | awk '/state:/ {print $2}')
+
+# State files for notification tracking
+TMPDIR="${XDG_RUNTIME_DIR:-/tmp}"
+FULL_FILE="$TMPDIR/battery-full"
+LOW_FILE="$TMPDIR/battery-low"
+CRIT_FILE="$TMPDIR/battery-critical"
+
+send_notification() {
+  local urgency="$1"
+  local summary="$2"
+  local body="$3"
+  local icon="$4"
+  notify-send -u "$urgency" -i "$icon" -r 9991 "$summary" "$body"
+}
+
+# Reset state logic
+if [ "$STATE" = "discharging" ]; then
+  rm -f "$FULL_FILE"
+elif [ "$STATE" = "charging" ]; then
+  rm -f "$LOW_FILE" "$CRIT_FILE"
+fi
+
+# Notification logic
+if [ "$STATE" = "charging" ] && [ "$PERCENT" -ge "$FULL_LEVEL" ] && [ ! -f "$FULL_FILE" ]; then
+  send_notification normal "Battery Charged" "($PERCENT%)." "$ICON_FULL"
+  touch "$FULL_FILE"
+elif [ "$STATE" = "discharging" ] && [ "$PERCENT" -le "$CRITICAL_LEVEL" ] && [ ! -f "$CRIT_FILE" ]; then
+  send_notification critical "Battery Critical" "($PERCENT%)! Connect to power soon." "$ICON_CRIT"
+  touch "$CRIT_FILE"
+elif [ "$STATE" = "discharging" ] && [ "$PERCENT" -le "$WARNING_LEVEL" ] && [ ! -f "$LOW_FILE" ]; then
+  send_notification critical "Battery Low" "($PERCENT%)." "$ICON_LOW"
+  touch "$LOW_FILE"
+fi

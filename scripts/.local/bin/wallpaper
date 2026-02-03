@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# ============================================
+# Hyprpaper Wallpaper Manager
+# Random wallpaper selector with caching
+# ============================================
+
+# -----------------------------------------------------
+# Configuration
+# -----------------------------------------------------
+
+WALLPAPER_DIR="$HOME/Dotfiles/wallpapers/Pictures/Wallpaper"
+CACHE_DIR="$HOME/.cache/wallpaper-manager"
+CURRENT_WALLPAPER_FILE="$CACHE_DIR/current_wallpaper"
+MONITOR="DP-1"  # Change this to your monitor name from 'hyprctl monitors'
+
+# Create cache directory if it doesn't exist
+mkdir -p "$CACHE_DIR"
+
+# -----------------------------------------------------
+# Logging function
+# -----------------------------------------------------
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$CACHE_DIR/wallpaper.log"
+}
+
+# -----------------------------------------------------
+# Get wallpaper (random or specified)
+# -----------------------------------------------------
+
+get_wallpaper() {
+    local wallpaper="$1"
+    
+    if [ -z "$wallpaper" ]; then
+        # No wallpaper specified, pick random
+        log "Selecting random wallpaper from $WALLPAPER_DIR"
+        
+        # Find all jpg and png files
+        wallpaper=$(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" \) | shuf -n 1)
+        
+        if [ -z "$wallpaper" ]; then
+            log "ERROR: No wallpapers found in $WALLPAPER_DIR"
+            exit 1
+        fi
+    else
+        # Expand tilde if present
+        wallpaper="${wallpaper/#\~/$HOME}"
+        
+        # Check if file exists
+        if [ ! -f "$wallpaper" ]; then
+            log "ERROR: Wallpaper file not found: $wallpaper"
+            exit 1
+        fi
+    fi
+    
+    echo "$wallpaper"
+}
+
+# -----------------------------------------------------
+# Set wallpaper using hyprpaper
+# -----------------------------------------------------
+
+set_wallpaper() {
+    local wallpaper="$1"
+    local filename=$(basename "$wallpaper")
+    
+    log "Setting wallpaper: $filename"
+    log "Full path: $wallpaper"
+    
+    # Set wallpaper via hyprctl
+    if hyprctl hyprpaper wallpaper "$MONITOR,$wallpaper" > /dev/null 2>&1; then
+        log "Successfully set wallpaper on monitor $MONITOR"
+        
+        # Save current wallpaper to cache
+        echo "$wallpaper" > "$CURRENT_WALLPAPER_FILE"
+        
+        # Send notification (if notify-send is available)
+        if command -v notify-send &> /dev/null; then
+            notify-send -a "Wallpaper Manager" -i "preferences-desktop-wallpaper" \
+                "Wallpaper Changed" "$filename"
+        fi
+        
+        return 0
+    else
+        log "ERROR: Failed to set wallpaper via hyprctl"
+        return 1
+    fi
+}
+
+# -----------------------------------------------------
+# Restore last wallpaper
+# -----------------------------------------------------
+
+restore_wallpaper() {
+    if [ -f "$CURRENT_WALLPAPER_FILE" ]; then
+        local last_wallpaper=$(cat "$CURRENT_WALLPAPER_FILE")
+        
+        if [ -f "$last_wallpaper" ]; then
+            log "Restoring last wallpaper: $last_wallpaper"
+            set_wallpaper "$last_wallpaper"
+            return 0
+        else
+            log "Last wallpaper file not found, selecting random"
+            return 1
+        fi
+    else
+        log "No previous wallpaper found"
+        return 1
+    fi
+}
+
+# -----------------------------------------------------
+# Main logic
+# -----------------------------------------------------
+
+case "${1:-random}" in
+    random)
+        log "=== Random wallpaper mode ==="
+        wallpaper=$(get_wallpaper)
+        set_wallpaper "$wallpaper"
+        ;;
+    
+    restore)
+        log "=== Restore wallpaper mode ==="
+        if ! restore_wallpaper; then
+            # If restore fails, set random
+            wallpaper=$(get_wallpaper)
+            set_wallpaper "$wallpaper"
+        fi
+        ;;
+    
+    set)
+        if [ -z "$2" ]; then
+            echo "Usage: $0 set /path/to/wallpaper.jpg"
+            exit 1
+        fi
+        log "=== Set specific wallpaper mode ==="
+        wallpaper=$(get_wallpaper "$2")
+        set_wallpaper "$wallpaper"
+        ;;
+    
+    next)
+        log "=== Next wallpaper mode ==="
+        wallpaper=$(get_wallpaper)
+        set_wallpaper "$wallpaper"
+        ;;
+    
+    *)
+        echo "Hyprpaper Wallpaper Manager"
+        echo ""
+        echo "Usage:"
+        echo "  $0 random          - Set a random wallpaper (default)"
+        echo "  $0 restore         - Restore last wallpaper"
+        echo "  $0 set <path>      - Set specific wallpaper"
+        echo "  $0 next            - Set next random wallpaper"
+        echo ""
+        echo "Configuration:"
+        echo "  Wallpaper directory: $WALLPAPER_DIR"
+        echo "  Monitor: $MONITOR"
+        echo "  Cache directory: $CACHE_DIR"
+        exit 0
+        ;;
+esac
+
+exit 0

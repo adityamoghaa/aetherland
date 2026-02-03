@@ -1,0 +1,69 @@
+{
+    "layer": "top",
+    "height": 32,
+    "spacing": 5,
+    "modules-left": [
+        "custom/arch-logo",
+        "tray",
+        "hyprland/window"
+    ],
+    "modules-center": [
+        "hyprland/workspaces"
+    ],
+    "modules-right": [
+        "battery",
+        "network",
+        "pulseaudio",
+        "custom/calendar",
+				"clock"
+		],
+    "custom/arch-logo": {
+        "format": " ",
+        "tooltip": false,
+        "on-click": ""
+    },
+		"hyprland/window": {
+			"separate-outputs": true
+		},
+    "hyprland/workspaces": {
+      "on-click": "activate",
+      "format": "{icon}",
+      "format-icons": {
+      "default": "",
+      "active": "",
+      "urgent": ""
+    },
+    },
+    "custom/calendar": {
+        "exec": "date '+%A, %B %d'",
+        "interval": 60,
+        "tooltip": false
+    },
+    "clock": {
+        "format": "{:%H:%M}"
+    },
+    "battery": {
+        "states": {
+            "warning": 20
+        },
+        "format": "{icon}",
+        "format-icons": [ "", "", "", "", ""],
+        "format-charging": "󱐋",
+        "format-warning": "",
+				"tooltip-format": "{capacity}% capacity"
+    },
+    "network": {
+        "format-wifi": "",
+        "format-disconnected": "",
+				"tooltip-format": "Connected to {essid}",
+				"on-click": "[float; size 80% 80%; center] wezterm -e nmtui"
+    },
+    "pulseaudio": {
+        "format": "{icon}",
+        "format-muted": "󰖁",
+				"format-icons": {
+					"default": ["", "", "󰕾"]
+				},
+				"tooltip-format": "{volume}% volume"
+		},
+}

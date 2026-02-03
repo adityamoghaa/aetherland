@@ -1,0 +1,10 @@
+[Unit]
+Description=Run battery notification script every 2 minutes
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=2m
+Unit=battery-warning.service
+
+[Install]
+WantedBy=default.target

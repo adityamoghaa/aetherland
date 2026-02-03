@@ -1,0 +1,52 @@
+#!/bin/env zsh
+STEP=5
+LIMIT=2.0
+REPLACE_ID=9993
+
+case $1 in
+  up)
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ 0
+    wpctl set-volume -l $LIMIT @DEFAULT_AUDIO_SINK@ ${STEP}%+
+    ;;
+  down)
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ 0
+    wpctl set-volume -l $LIMIT @DEFAULT_AUDIO_SINK@ ${STEP}%-
+    ;;
+  mute)
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+    ;;
+  *)
+    echo "Usage: $0 {up|down|mute}"
+    exit 1
+    ;;
+esac
+
+VOLUME=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}')
+
+send_notification() {
+  if [ "$1" = "mute" ]; then
+    ICON="mute"
+    TEXT="Currently muted"
+    VOLUME=0
+  elif [ "$VOLUME" -lt 33 ]; then
+    ICON="low"
+    TEXT="Currently at ${VOLUME}%"
+  elif [ "$VOLUME" -lt 66 ]; then
+    ICON="medium"
+    TEXT="Currently at ${VOLUME}%"
+  else
+    ICON="high"
+    TEXT="Currently at ${VOLUME}%"
+  fi
+
+  dunstify -a "Volume" -r $REPLACE_ID -h int:value:"$VOLUME" -i "volume-$ICON" "Volume" "$TEXT" -t 2000
+}
+
+if [ "$1" = "mute" ]; then
+  case "$(wpctl get-volume @DEFAULT_AUDIO_SINK@)" in
+    *MUTED*) send_notification mute;;
+    *)       send_notification;;
+  esac
+else
+  send_notification
+fi

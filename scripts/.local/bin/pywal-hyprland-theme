@@ -1,0 +1,89 @@
+#!/bin/bash
+
+set -e
+
+# 1. Pick a random wallpaper
+WALLPAPER_DIR="$HOME/Pictures/Wallpaper"
+WALLPAPER="$(find "$WALLPAPER_DIR" -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' \) | shuf -n 1)"
+
+# 2. Update hyprpaper config and set wallpaper live
+HYPRPAPER_CONF="$HOME/.config/hypr/hyprpaper.conf"
+# Replace only the full 'preload' and 'wallpaper = eDP-1,' lines
+sed -i "s|^preload = .*|preload = $WALLPAPER|" "$HYPRPAPER_CONF"
+sed -i "s|^wallpaper = eDP-1,.*|wallpaper = eDP-1,$WALLPAPER|" "$HYPRPAPER_CONF"
+
+# Optionally kill and restart Hyprpaper for changes to take effect
+pkill hyprpaper 2>/dev/null || true
+hyprpaper & disown
+
+# 3. Generate colors with pywal
+wal -i "$WALLPAPER" --backend auto --saturate 0.8
+
+# 4. Source pywal colors
+source "$HOME/.cache/wal/colors.sh"
+
+# 5. Update Hyprland border colors (in-place edit)
+HYPRLAND_CONF="$HOME/.config/hypr/hyprland.conf"
+sed -i -E "s|(col.active_border = ).*|\1rgba(${color1:1}ee) rgba(${color2:1}ee) 45deg|" "$HYPRLAND_CONF"
+sed -i -E "s|(col.inactive_border = ).*|\1rgba(${color0:1}aa)|" "$HYPRLAND_CONF"
+
+# 6. Update Waybar colors (write all 8 main colors)
+WAYBAR_COLORS="$HOME/.config/waybar/colors.css"
+cat > "$WAYBAR_COLORS" <<EOF
+@define-color background $background;
+@define-color foreground $foreground;
+@define-color accent $color1;
+@define-color color0 $color0;
+@define-color color1 $color1;
+@define-color color2 $color2;
+@define-color color3 $color3;
+@define-color color4 $color4;
+@define-color color5 $color5;
+@define-color color6 $color6;
+@define-color color7 $color7;
+EOF
+killall -SIGUSR2 waybar 2>/dev/null || true
+
+# 7. Update Alacritty colors (prefer pywalfox if available)
+if command -v pywalfox >/dev/null 2>&1; then
+    pywalfox alacritty
+else
+    cp "$HOME/.cache/wal/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+fi
+
+# 8. Update Rofi colors (if you use a custom rasi referencing these colors)
+ROFI_COLORS="$HOME/.config/rofi/colors.rasi"
+cat > "$ROFI_COLORS" <<EOF
+* {
+  background: $background;
+  foreground: $foreground;
+  accent: $color1;
+  color0: $color0;
+  color1: $color1;
+  color2: $color2;
+  color3: $color3;
+  color4: $color4;
+  color5: $color5;
+  color6: $color6;
+  color7: $color7;
+}
+EOF
+
+# 9. Update LazyVim/Nvim colors (requires a Lua loader for wal colors)
+WAL_LUA="$HOME/.cache/wal/colors-wal.lua"
+cat > "$WAL_LUA" <<EOF
+return {
+  background = "$background",
+  foreground = "$foreground",
+  color0 = "$color0",
+  color1 = "$color1",
+  color2 = "$color2",
+  color3 = "$color3",
+  color4 = "$color4",
+  color5 = "$color5",
+  color6 = "$color6",
+  color7 = "$color7",
+}
+EOF
+
+echo "Wallpaper set to $WALLPAPER and theme applied!"

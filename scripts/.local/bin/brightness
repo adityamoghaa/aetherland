@@ -1,0 +1,44 @@
+#!/bin/env zsh
+
+ICON="brightness"
+REPLACE_ID=9993
+TIMEOUT=1000
+STEP=5
+MIN_BRIGHTNESS=5
+
+get_brightness_percent() {
+  curr=$(brightnessctl get)
+  max=$(brightnessctl m)
+  echo $((curr * 100 / max))
+}
+
+send_notification() {
+  percent=$(get_brightness_percent)
+  dunstify -a "Backlight" \
+    -u low \
+    -r "$REPLACE_ID" \
+    -h int:value:"$percent" \
+    -i "$ICON" \
+    "Brightness" "Currently at $percent%" \
+    -t "$TIMEOUT"
+}
+
+case "$1" in
+up)
+  brightnessctl set ${STEP}%+
+  send_notification
+  ;;
+down)
+  curr_percent=$(get_brightness_percent)
+  if [ "$curr_percent" -le "$MIN_BRIGHTNESS" ]; then
+    exit 1
+  fi
+  brightnessctl set ${STEP}%-
+  send_notification
+  ;;
+*)
+  echo "Usage: $0 {up|down}"
+  exit 1
+  ;;
+esac
+
