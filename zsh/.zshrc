@@ -64,3 +64,5 @@ eval "$(zoxide init --cmd cd zsh)"
 #unset __conda_setup
 # <<< conda initialize <<<
 
+export PATH="/home/aditya/.local/bin:$PATH"
+export PATH="/home/aditya/.local/bin:$PATH"
