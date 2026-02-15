@@ -56,7 +56,7 @@
         "format-wifi": "",
         "format-disconnected": "",
 				"tooltip-format": "Connected to {essid}",
-				"on-click": "[float; size 80% 80%; center] wezterm -e nmtui"
+        "on-click": "wezterm --start float -e nmtui"
     },
     "pulseaudio": {
         "format": "{icon}",

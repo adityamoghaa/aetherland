@@ -66,3 +66,7 @@ eval "$(zoxide init --cmd cd zsh)"
 
 export PATH="/home/aditya/.local/bin:$PATH"
 export PATH="/home/aditya/.local/bin:$PATH"
+export PATH="$HOME/.npm-global/bin:$PATH"
+
+# OpenClaw Completion
+source "/home/aditya/.openclaw/completions/openclaw.zsh"

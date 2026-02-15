@@ -1,0 +1,21 @@
+[Unit]
+Description=OpenClaw Gateway (v2026.2.14)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart="/usr/bin/node" "/home/aditya/.npm-global/lib/node_modules/openclaw/dist/index.js" gateway --port 18789
+Restart=always
+RestartSec=5
+KillMode=process
+Environment=HOME=/home/aditya
+Environment="PATH=/home/aditya/.local/bin:/home/aditya/.npm-global/bin:/home/aditya/bin:/home/aditya/.nvm/current/bin:/home/aditya/.fnm/current/bin:/home/aditya/.volta/bin:/home/aditya/.asdf/shims:/home/aditya/.local/share/pnpm:/home/aditya/.bun/bin:/usr/local/bin:/usr/bin:/bin"
+Environment=OPENCLAW_GATEWAY_PORT=18789
+Environment=OPENCLAW_GATEWAY_TOKEN=ea52cf3d7639ab391eb4ea2ae4dd458b62c725a4bf2a741e
+Environment="OPENCLAW_SYSTEMD_UNIT=openclaw-gateway.service"
+Environment=OPENCLAW_SERVICE_MARKER=openclaw
+Environment=OPENCLAW_SERVICE_KIND=gateway
+Environment=OPENCLAW_SERVICE_VERSION=2026.2.14
+
+[Install]
+WantedBy=default.target

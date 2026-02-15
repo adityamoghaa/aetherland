@@ -1,7 +1,7 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "logo": {
-    "source": "~/.config/fastfetch/arch",
+    "source": "~/.config/fastfetch/aether",
     "color": {
       "1": "green"
     },
@@ -19,7 +19,8 @@
       "format": "══════════════════════════════════════════════════════"
     },
     {
-      "type": "os", "type": "host",
+      "type": "os",
+      "type": "host",
       "key": "  ",
       "keyColor": "blue"
     },

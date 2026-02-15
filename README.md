@@ -8,6 +8,7 @@
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 **Universal Arch Linux installer with integrated dotfiles management**
+
 *Built by a CS student, optimized for productivity and low-resource systems*
 
 [Features](#-features) • [Installation](#-installation) • [Keybindings](#%EF%B8%8F-keybindings) • [Customization](#-customization) • [Credits](#-credits)
@@ -27,7 +28,6 @@
   - [Method 3: Just Dotfiles](#method-3-just-dotfiles-no-system-install)
 - [What's Included](#-whats-included)
 - [Keybindings](#%EF%B8%8F-keybindings)
-- [Custom Scripts](#-custom-workflow-scripts)
 - [Customization](#-customization)
 - [Hardware Optimizations](#-hardware-optimizations)
 - [Dotfiles Management](#-dotfiles-management-with-stow)
@@ -88,7 +88,6 @@ This configuration is designed for students and developers who:
 - **Media**: Spotify, MPV, VLC
 - **Browsers**: Firefox, Google-Chrome
 
-## 📸 Screenshots
 ## 📸 Screenshots
 
 ### Desktop
@@ -668,6 +667,7 @@ If this project helped you, consider giving it a star! ⭐
 <div align="center">
 
 **Made with ❤️ by a CS student who loves tinkering**
+
 *Optimized for productivity • Designed for students • Built for low-spec systems*
 
 [⬆ Back to Top](#aether-dotfiles-)
