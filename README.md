@@ -105,6 +105,7 @@ This configuration is designed for students and developers who:
 ### File Manager
 ![Yazi](screenshots/yazi.png)
 *File management with yazi*
+
 ---
 
 ## 🚀 Installation
