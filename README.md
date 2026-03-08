@@ -8,7 +8,6 @@
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 **Universal Arch Linux installer with integrated dotfiles management**
-
 *Built by a CS student, optimized for productivity and low-resource systems*
 
 [Features](#-features) • [Installation](#-installation) • [Keybindings](#%EF%B8%8F-keybindings) • [Customization](#-customization) • [Credits](#-credits)
