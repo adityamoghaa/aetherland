@@ -49,6 +49,11 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
+export PATH="/home/aditya/.local/bin:$PATH"
+export PATH="/home/aditya/.local/bin:$PATH"
+export PATH="$HOME/.npm-global/bin:$PATH"
+
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 #__conda_setup="$('/home/aditya/Workspace/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -56,17 +61,11 @@ eval "$(zoxide init --cmd cd zsh)"
 #    eval "$__conda_setup"
 #else
 #    if [ -f "/home/aditya/Workspace/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/aditya/Workspace/anaconda3/etc/profile.d/conda.sh"
+#        . "/home/aditya/Workspace/anaconda3/etc/profile.d/conda.sh"
 #    else
-#       export PATH="/home/aditya/Workspace/anaconda3/bin:$PATH"
+#        export PATH="/home/aditya/Workspace/anaconda3/bin:$PATH"
 #    fi
 #fi
 #unset __conda_setup
 # <<< conda initialize <<<
 
-export PATH="/home/aditya/.local/bin:$PATH"
-export PATH="/home/aditya/.local/bin:$PATH"
-export PATH="$HOME/.npm-global/bin:$PATH"
-
-# OpenClaw Completion
-source "/home/aditya/.openclaw/completions/openclaw.zsh"
