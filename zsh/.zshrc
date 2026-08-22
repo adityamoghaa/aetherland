@@ -1,10 +1,3 @@
-# Hyprland
-if [[ -z "$WAYLAND_DISPLAY" ]] && [[ -z "$DISPLAY" ]] && [[ "$XDG_VTNR" -eq 1 ]]; then
-    if uwsm check may-start &>/dev/null; then
-        exec uwsm start hyprland.desktop
-    fi
-fi
-
 #Starship
 eval "$(starship init zsh)"
 
@@ -52,20 +45,4 @@ eval "$(zoxide init --cmd cd zsh)"
 export PATH="/home/aditya/.local/bin:$PATH"
 export PATH="/home/aditya/.local/bin:$PATH"
 export PATH="$HOME/.npm-global/bin:$PATH"
-
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/aditya/Workspace/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/aditya/Workspace/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/aditya/Workspace/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/aditya/Workspace/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 

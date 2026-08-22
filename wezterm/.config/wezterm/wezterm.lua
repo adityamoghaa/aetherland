@@ -11,7 +11,7 @@ config.scrollback_lines = 10000
 config.color_scheme = "Catppuccin Mocha"
 
 config.font = wezterm.font({
-	family = "JetBrains Mono",
+	family = "Maple Mono NF",
 	weight = "Regular",
 	harfbuzz_features = { "calt=1", "clig=1", "liga=1" }, -- Enable ligatures
 })
