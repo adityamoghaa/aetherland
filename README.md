@@ -474,22 +474,7 @@ stow */
 
 # Dry run (see what would happen)
 stow --no -v package-name
-```
 
-### Adding New Configs
-
-```bash
-cd ~/.dotfiles
-
-# Create package structure
-mkdir -p alacritty/.config/alacritty
-
-# Add config
-cp ~/.config/alacritty/alacritty.yml alacritty/.config/alacritty/
-
-# Stow it
-stow alacritty
-'''
 
 ---
 
