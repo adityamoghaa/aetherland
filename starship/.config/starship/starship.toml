@@ -4,6 +4,9 @@ right_format = """$all"""
 command_timeout = 500
 scan_timeout = 200
 
+[battery]
+disabled = "true"
+
 [character]
 vicmd_symbol = "[N] >>>"
 success_symbol = '[➜](bold green)'

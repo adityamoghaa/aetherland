@@ -1,7 +1,7 @@
 @import "colors.css";
 
 * {
-    font-family: Cantarell, Symbols Nerd Font;
+    font-family: Jetbrains Mono NF, Symbols Nerd Font;
     font-weight: bolder;
     font-size: 14px;
 }
@@ -88,7 +88,7 @@ button {
 #idle_inhibitor,
 #scratchpad,
 #mpd {
-    padding: 0 9px;
+    padding: 0 6px;
     color: @text;
     border-radius: 15px;
     margin: 5px 0;

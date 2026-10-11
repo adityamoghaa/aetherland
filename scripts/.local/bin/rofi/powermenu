@@ -62,7 +62,7 @@ run_cmd() {
 			pamixer set Master mute
 			systemctl suspend
 		elif [[ $1 == '--logout' ]]; then
-      hyprctl dispatch exit
+      hyprshutdown
 		fi
 	else
 		exit 0
